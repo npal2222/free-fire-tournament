@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,93 +6,131 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Fire Tournament</title>
 <style>
-* { box-sizing: border-box; }
-body {
-  margin: 0; min-height: 100vh; padding: 25px 15px;
-  background: #101014; color: white;
-  font-family: Arial, sans-serif; text-align: center;
-}
-.card {
-  max-width: 430px; margin: 30px auto; padding: 25px;
-  background: #1d1d25; border: 1px solid #ffc400;
-  border-radius: 18px;
-}
-h1 { color: #ffc400; }
-.prizes { line-height: 2; font-weight: bold; }
-input, button {
-  width: 100%; padding: 14px; margin-top: 12px;
-  border-radius: 8px; font-size: 16px;
-}
-input { background: #101014; color: white; border: 1px solid #555; }
-button {
-  background: #ffc400; color: black; border: none;
-  font-weight: bold; cursor: pointer;
-}
-#result { margin-top: 20px; overflow-wrap: anywhere; }
-.small { color: #bbb; font-size: 13px; }
+*{box-sizing:border-box}
+body{margin:0;padding:20px;background:#0b0b12;color:white;font-family:Arial,sans-serif}
+.container{max-width:520px;margin:20px auto}
+header{text-align:center;margin-bottom:24px}
+h1{color:#ff6b00;font-size:27px}
+.subtitle{color:#c5c5d1}
+.card{background:#171722;border:1px solid #303044;border-radius:16px;padding:20px;margin-bottom:18px}
+.fees{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.fee-box{background:#222231;border-radius:10px;padding:14px 5px;text-align:center}
+.fee-box span,.fee-box strong{display:block}
+.fee-box span{color:#ccc;font-size:13px;margin-bottom:8px}
+.fee-box strong{color:#ff7b00;font-size:22px}
+label{display:block;margin:16px 0 8px;font-weight:bold;font-size:14px}
+input,select{width:100%;padding:13px;border:1px solid #39394b;border-radius:9px;background:#101019;color:white;font-size:15px}
+button{width:100%;margin-top:18px;padding:14px;border:0;border-radius:10px;background:#ff6b00;color:white;font-size:16px;font-weight:bold;cursor:pointer}
+.hidden{display:none}
+.token{text-align:center;color:#68ff9b;font-size:22px;overflow-wrap:anywhere;margin:16px 0}
+.notice{color:#ccc;font-size:12px;line-height:1.6;margin-top:15px}
+.error{color:#ff7777;font-size:13px}
+footer{text-align:center;color:#888;font-size:12px;margin:20px}
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>🔥 FREE FIRE 🔥</h1>
-  <h2>TOURNAMENT</h2>
-  <p>Entry Fee: <strong>₹11</strong></p>
-  <div class="prizes">
-    🥇 1st Prize: ₹1,000<br>
-    🥈 2nd Prize: ₹500<br>
-    🥉 3rd Prize: 100 Diamonds
-  </div>
+<main class="container">
 
-  <hr>
-  <h2>Get Your Token</h2>
-  <form id="form">
-    <input id="uid" placeholder="Enter Free Fire UID"
-           inputmode="numeric" required>
-    <button type="submit">GENERATE TOKEN</button>
-  </form>
-  <div id="result" aria-live="polite"></div>
-  <p class="small">
-    Demo only: token records are saved in this browser,
-    not on a shared server. Payment is not collected here.
-  </p>
+<header>
+<div style="font-size:42px">🎮</div>
+<h1>FREE FIRE TOURNAMENT</h1>
+<p class="subtitle">Register now and join the battle!</p>
+</header>
+
+<section class="card">
+<h2>🏆 Entry Fees</h2>
+<div class="fees">
+<div class="fee-box"><span>SOLO</span><strong>₹11</strong></div>
+<div class="fee-box"><span>DUO</span><strong>₹20</strong></div>
+<div class="fee-box"><span>SQUAD</span><strong>₹30</strong></div>
 </div>
+</section>
+
+<section class="card">
+<h2>📝 Player Registration</h2>
+<form id="registrationForm">
+
+<label for="playerName">Player Name</label>
+<input type="text" id="playerName" maxlength="40" placeholder="Enter player name" required>
+
+<label for="uid">Free Fire UID</label>
+<input type="text" id="uid" inputmode="numeric" pattern="[0-9]{5,20}" maxlength="20" placeholder="Enter Free Fire UID" required>
+
+<label for="gameMode">Select Game Mode</label>
+<select id="gameMode" required>
+<option value="Solo">Solo - ₹11</option>
+<option value="Duo">Duo - ₹20</option>
+<option value="Squad">Squad - ₹30</option>
+</select>
+
+<button type="submit">Register Now</button>
+<p id="errorMessage" class="error" role="alert"></p>
+</form>
+</section>
+
+<section class="card hidden" id="confirmation">
+<h2>✅ Demo Registration</h2>
+<p>Player: <strong id="confirmName"></strong></p>
+<p>UID: <strong id="confirmUid"></strong></p>
+<p>Game Mode: <strong id="confirmMode"></strong></p>
+<p>Entry Fee: <strong id="confirmFee"></strong></p>
+<p style="text-align:center;margin-top:18px">Demo Token</p>
+<div id="tokenValue" class="token"></div>
+<button type="button" id="copyButton">Copy Demo Token</button>
+<p class="notice">
+यह केवल डेमो है। ऑनलाइन पेमेंट नहीं होती और रजिस्ट्रेशन
+किसी साझा डेटाबेस में सेव नहीं होता। यह टोकन असली टूर्नामेंट
+में भागीदारी की पुष्टि नहीं करता।
+</p>
+</section>
+
+<footer>Fan-made tournament page • Not affiliated with Garena</footer>
+</main>
 
 <script>
-const form = document.getElementById("form");
-const uidInput = document.getElementById("uid");
-const result = document.getElementById("result");
+document.addEventListener("DOMContentLoaded", function () {
+  const fees = { Solo: 11, Duo: 20, Squad: 30 };
+  const form = document.getElementById("registrationForm");
+  const gameMode = document.getElementById("gameMode");
+  const confirmation = document.getElementById("confirmation");
+  const errorMessage = document.getElementById("errorMessage");
+  const copyButton = document.getElementById("copyButton");
 
-form.addEventListener("submit", function(event) {
-  event.preventDefault();
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    errorMessage.textContent = "";
 
-  const uid = uidInput.value.trim();
+    const name = document.getElementById("playerName").value.trim();
+    const uid = document.getElementById("uid").value.trim();
+    const mode = gameMode.value;
 
-  if (!/^\d{5,20}$/.test(uid)) {
-    result.textContent = "Please enter a valid numeric UID.";
-    return;
-  }
+    if (!name || !/^[0-9]{5,20}$/.test(uid)) {
+      errorMessage.textContent = "सही नाम और 5 से 20 अंकों वाला UID भरें।";
+      return;
+    }
 
-  const records = JSON.parse(
-    localStorage.getItem("ffTokens") || "{}"
-  );
+    const token = "FFT-DEMO-" +
+      Math.random().toString(36).slice(2, 8).toUpperCase();
 
-  if (records[uid]) {
-    result.textContent =
-      "Your existing token: " + records[uid];
-    return;
-  }
+    document.getElementById("confirmName").textContent = name;
+    document.getElementById("confirmUid").textContent = uid;
+    document.getElementById("confirmMode").textContent = mode;
+    document.getElementById("confirmFee").textContent = "₹" + fees[mode];
+    document.getElementById("tokenValue").textContent = token;
 
-  let token;
-  do {
-    token = "FF-" + Math.floor(
-      100000 + Math.random() * 900000
-    );
-  } while (Object.values(records).includes(token));
+    confirmation.classList.remove("hidden");
+    confirmation.scrollIntoView({behavior:"smooth", block:"start"});
+  });
 
-  records[uid] = token;
-  localStorage.setItem("ffTokens", JSON.stringify(records));
-
-  result.textContent = "Your Token Number: " + token;
+  copyButton.addEventListener("click", async function () {
+    const token = document.getElementById("tokenValue").textContent;
+    try {
+      await navigator.clipboard.writeText(token);
+      copyButton.textContent = "Copied!";
+    } catch (error) {
+      window.prompt("अपना Demo Token कॉपी करें:", token);
+    }
+  });
 });
 </script>
 </body>
