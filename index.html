@@ -1,0 +1,100 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Fire Tournament</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh; padding: 25px 15px;
+  background: #101014; color: white;
+  font-family: Arial, sans-serif; text-align: center;
+}
+.card {
+  max-width: 430px; margin: 30px auto; padding: 25px;
+  background: #1d1d25; border: 1px solid #ffc400;
+  border-radius: 18px;
+}
+h1 { color: #ffc400; }
+.prizes { line-height: 2; font-weight: bold; }
+input, button {
+  width: 100%; padding: 14px; margin-top: 12px;
+  border-radius: 8px; font-size: 16px;
+}
+input { background: #101014; color: white; border: 1px solid #555; }
+button {
+  background: #ffc400; color: black; border: none;
+  font-weight: bold; cursor: pointer;
+}
+#result { margin-top: 20px; overflow-wrap: anywhere; }
+.small { color: #bbb; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🔥 FREE FIRE 🔥</h1>
+  <h2>TOURNAMENT</h2>
+  <p>Entry Fee: <strong>₹11</strong></p>
+  <div class="prizes">
+    🥇 1st Prize: ₹1,000<br>
+    🥈 2nd Prize: ₹500<br>
+    🥉 3rd Prize: 100 Diamonds
+  </div>
+
+  <hr>
+  <h2>Get Your Token</h2>
+  <form id="form">
+    <input id="uid" placeholder="Enter Free Fire UID"
+           inputmode="numeric" required>
+    <button type="submit">GENERATE TOKEN</button>
+  </form>
+  <div id="result" aria-live="polite"></div>
+  <p class="small">
+    Demo only: token records are saved in this browser,
+    not on a shared server. Payment is not collected here.
+  </p>
+</div>
+
+<script>
+const form = document.getElementById("form");
+const uidInput = document.getElementById("uid");
+const result = document.getElementById("result");
+
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const uid = uidInput.value.trim();
+
+  if (!/^\d{5,20}$/.test(uid)) {
+    result.textContent = "Please enter a valid numeric UID.";
+    return;
+  }
+
+  const records = JSON.parse(
+    localStorage.getItem("ffTokens") || "{}"
+  );
+
+  if (records[uid]) {
+    result.textContent =
+      "Your existing token: " + records[uid];
+    return;
+  }
+
+  let token;
+  do {
+    token = "FF-" + Math.floor(
+      100000 + Math.random() * 900000
+    );
+  } while (Object.values(records).includes(token));
+
+  records[uid] = token;
+  localStorage.setItem("ffTokens", JSON.stringify(records));
+
+  result.textContent = "Your Token Number: " + token;
+});
+</script>
+</body>
+</html>
